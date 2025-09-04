@@ -31,6 +31,8 @@ vector<string> get_path_commands() {
         if (!dp) continue;
         struct dirent *entry;
         while ((entry = readdir(dp)) != NULL) {
+            //DT_REG gives the regular files
+            // DT_LINK give the symbolic link
             if (entry->d_type == DT_REG || entry->d_type == DT_LNK) {
                 cmds.push_back(entry->d_name);
             }
@@ -69,6 +71,8 @@ string autocomplete(const string &current_input, bool list_all) {
     if (tokens.size() <= 1) {
         vector<string> all_cmds = internal_cmds;
         vector<string> path_cmds = get_path_commands();
+        //After the internal commands we insert the path commands
+        
         all_cmds.insert(all_cmds.end(), path_cmds.begin(), path_cmds.end());
         sort(all_cmds.begin(), all_cmds.end());
         for (auto &cmd : all_cmds) {

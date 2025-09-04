@@ -8,9 +8,9 @@ void load_history(){
     }
 
     char buffer[1024];
-    int bytes_read=read(fd,buffer,sizeof(buffer));
+    size_t bytes_read=read(fd,buffer,sizeof(buffer));
     string temp;
-    for(int i=0;i<bytes_read;i++){
+    for(size_t i=0;i<bytes_read;i++){
         if(buffer[i]=='\n'){
             if(!temp.empty()){
                 command_history.push_back(temp);
@@ -24,7 +24,7 @@ void load_history(){
     close(fd);
 }
 void save_history(){
-    int fd=open(HISTORY_FILE,O_WRONLY| O_TRUNC | O_APPEND,0644);
+    int fd=open(HISTORY_FILE,O_WRONLY | O_CREAT | O_APPEND,0644);
     if(fd<0){
         cout<<"Could not open file"<<endl;
         return;

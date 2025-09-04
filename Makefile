@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -Wall -g
-OBJS = main.o main_logic.o autocomplete.o builtins.o history.o io.o pipeline.o utils.o signals.o
+OBJS = main.o shell_core.o autocomplete.o builtins.o history.o io.o pipeline.o utils.o signals.o
 TARGET = shell
 
 all: $(TARGET)

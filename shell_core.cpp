@@ -10,7 +10,7 @@ string input_with_history(vector<string>& command_history) {
     enable_raw_mode(orig_termios);
 
     string buffer;
-    int history_index = command_history.size();
+    size_t history_index = command_history.size();
     string current_input;
     bool history_mode = false;
     static bool second_tab = false;

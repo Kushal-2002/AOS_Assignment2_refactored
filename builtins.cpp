@@ -34,7 +34,7 @@ void cd_handler(vector<string> tokens){
 }
 
 void echo_handler(vector<string> tokens){
-    for(int i=1;i<tokens.size();i++){
+    for(size_t i=1;i<tokens.size();i++){
         cout<<tokens[i];
         if(i!=tokens.size()-1)cout<<" ";
     }
@@ -127,7 +127,7 @@ void ls_handler(vector<string> tokens){
         }
     }
     string path=".";
-    for(int i=1;i<tokens.size();i++){
+    for(size_t i=1;i<tokens.size();i++){
         if(tokens[i][0]!='-'){
             if(tokens[i]=="~"){
                 path=getenv("HOME");
@@ -166,41 +166,85 @@ void ls_handler(vector<string> tokens){
 
 void pinfo_handler(pid_t pid){
     string path="/proc/"+to_string(pid)+"/stat";
+    
     int fd=open(path.c_str(),O_RDONLY);
-    if(fd<0){ perror("Error opening file"); return; }
+    if(fd<0){
+        perror("Error opening file");
+        return;
+    }
+
     char buffer[1024];
+
     ssize_t n=read(fd,buffer,1023);
-    if(n < 0){ perror("Error reading /proc/stat"); close(fd); return; }
+
+    if(n < 0){
+        perror("Error reading /proc/stat");
+        close(fd);
+        return;
+    }
     buffer[n] = '\0';
     close(fd);
+
     stringstream ss(buffer);
+    
     int pid_read, ppid, pgrp;
     string comm;
     char status;
+    
     ss>>pid_read>>comm>>status>>ppid>>pgrp;
+    
+    // check foreground
     pid_t fg_pgrp = tcgetpgrp(STDIN_FILENO);
+    
     cout << "Process Status -- " << status;
     if (pgrp == fg_pgrp) {
         cout << "+";
     }
     cout << endl;
+
+    //Getting virtual memory size used
+
     path="/proc/"+to_string(pid)+"/statm";
+
     fd = open(path.c_str(), O_RDONLY);
-    if(fd < 0){ perror("Error opening /proc/statm"); return; }
+
+    if(fd < 0){
+        perror("Error opening /proc/statm");
+        return;
+    }
     n = read(fd, buffer, sizeof(buffer)-1);
-    if(n < 0){ perror("Error reading /proc/statm"); close(fd); return; }
+    if(n < 0){
+        perror("Error reading /proc/statm");
+        close(fd);
+        return;
+    }
     buffer[n] = '\0';
     close(fd);
+    
     stringstream m_ss(buffer);
+    
     int vm_pages;
+    
     long page_size = sysconf(_SC_PAGESIZE); 
+
     m_ss>>vm_pages;
+    
+    //VM size in bytes
+    
     cout << "memory -- " << vm_pages*page_size << " {Virtual Memory}" << endl;
+
+    //Getting executable path
     path="/proc/"+to_string(pid)+"/exe";
+    
     char exe_path[4096];
+    
     ssize_t len=readlink(path.c_str(),exe_path,sizeof(exe_path)-1);
-    if(len!=-1){ exe_path[len]='\0'; }
+    
+    if(len!=-1){
+        exe_path[len]='\0';
+    }
     cout << "Executable Path -- " << exe_path << endl;
+    // cout<<content<<endl;
 }
 
 bool search_handler(const string &target,const string &dir){

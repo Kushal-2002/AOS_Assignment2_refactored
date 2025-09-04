@@ -29,7 +29,7 @@ vector<string> tokenizer(string str){
 
 string preprocess(string str){
     string res;
-    for(int i=0;i<str.length();i++){
+    for(size_t i=0;i<str.length();i++){
         if(str[i]=='>' || str[i]=='<' || str[i]=='|'){
             if(str[i]=='>' && i+1<str.size() && str[i+1] == '>'){
                 res+=" >> ";

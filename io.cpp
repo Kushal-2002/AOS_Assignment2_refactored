@@ -82,7 +82,7 @@ void parse_redirection(vector<string> &tokens,
                        string &output_file,
                        bool &append) {
     vector<string> cleaned;
-    for (int i = 0; i < tokens.size(); i++) {
+    for (size_t i = 0; i < tokens.size(); i++) {
         if (tokens[i] == "<" && i + 1 < tokens.size()) {
             input_file = tokens[++i];
         }
