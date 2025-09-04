@@ -63,7 +63,8 @@ void system_command_handler(vector<string>& tokens, bool bg) {
         }
         exit(0);
     }
-    else {  // --- PARENT ---
+    else { 
+        //Parent
         if (!bg) {
             fg_pid = pid;  // tell handlers which process is foreground
             waitpid(pid, NULL, WUNTRACED);  
@@ -105,7 +106,7 @@ void apply_redirection(const string &input_file,
                        bool append) {
     if (!input_file.empty()) {
         int fd_in = open(input_file.c_str(), O_RDONLY);
-        if (fd_in < 0) { perror("open input"); exit(1); }
+        if (fd_in < 0) { perror("input file could not be opened"); exit(1); }
         dup2(fd_in, STDIN_FILENO);
         close(fd_in);
     }
@@ -114,7 +115,7 @@ void apply_redirection(const string &input_file,
         int fd_out = open(output_file.c_str(),
                           O_CREAT | O_WRONLY | (append ? O_APPEND : O_TRUNC),
                           0644);
-        if (fd_out < 0) { perror("open output"); exit(1); }
+        if (fd_out < 0) { perror("output file could not be opened"); exit(1); }
         dup2(fd_out, STDOUT_FILENO);
         close(fd_out);
     }

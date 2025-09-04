@@ -17,13 +17,22 @@ string input_with_history(vector<string>& command_history) {
 
     cout.flush();
 
+    
+    
+
     while (true) {
         char ch = getchar();
 
         if (ch == '\n') {
             cout << endl;
             break;
-        } else if (ch == 127 || ch == '\b') {
+        }else if (ch == 4) {  // ASCII EOT (Ctrl+D)
+            if (buffer.empty()) {
+                disable_raw_mode(orig_termios);
+                return "__EOF__";  // special marker for EOF
+            }
+        } 
+        else if (ch == 127 || ch == '\b') {
             if (!buffer.empty()) {
                 buffer.pop_back();
                 cout << "\b \b";
@@ -90,6 +99,7 @@ string input_with_history(vector<string>& command_history) {
 }
 
 void execute_command(vector<vector<string>> &commands, bool bg) {
+    //If the command contains pipe then it goes throught this part to execute-pipeline
     if (commands.size() > 1) {
         execute_pipeline(commands, bg);
         return;

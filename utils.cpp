@@ -23,6 +23,7 @@ vector<string> tokenizer(string str){
         ans.push_back(token);
         token=strtok(NULL," \t");
     }
+    free(s);
     return ans;
 }
 
@@ -53,7 +54,9 @@ void display(){
     char cwd[PATH_MAX];
     getcwd(cwd,PATH_MAX);
     string home=getenv("HOME");
+    // cout<<home<<endl;
     string cwd_as_string=cwd;
+    // cout<<cwd_as_string<<endl;
     cwd_as_string="~"+cwd_as_string.substr(home.length());
     printf("%s@%s:%s>",username,hostname,cwd_as_string.c_str());
     fflush(stdout);
